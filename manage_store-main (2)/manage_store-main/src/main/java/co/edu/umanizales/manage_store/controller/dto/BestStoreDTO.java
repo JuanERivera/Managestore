@@ -10,4 +10,7 @@ public class BestStoreDTO {
     private Store store;
     private int quantity;
 
+    public BestStoreDTO() {
+
+    }
 }

@@ -13,6 +13,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @RestController
 @RequestMapping(path = "sale")
 public class SaleController {
@@ -27,7 +30,7 @@ public class SaleController {
     public ResponseEntity<ResponseDTO> getSales(){
         return new ResponseEntity<>(
                 new ResponseDTO(200,
-                        saleService.getSales(),
+                        saleService.getTotalSales(),
                 null),
                 HttpStatus.OK);
     }
@@ -52,7 +55,7 @@ public class SaleController {
             @PathVariable String code
     ){
         return new ResponseEntity<>(new ResponseDTO(200,
-        "La sucursal vendio un total de:"+saleService.getTotalSalesByStore(code), null),
+        "La sucursal vendio un total de:"+ saleService.getTotalSalesByStore(code), null),
          HttpStatus.OK);
     }
 
@@ -117,5 +120,37 @@ public class SaleController {
                     "El promedio de venta de los vendedores es de:"+saleService.getTotalSales() / (float) sellerService.getSellers().size(),
                     null), HttpStatus.OK);
         }
+    }
+    @GetMapping("/storesreport/{quant}")
+    public ResponseEntity<ResponseDTO> getStoreReport(@PathVariable int quantity){
+        List<Store> storeReport = new ArrayList<>();
+        for (Store store : storeService.getStores()) {
+            int totalsales=0;
+            for (Sale sale : saleService.getSales()) {
+                if (sale.getStore().getCode().equals(store.getCode())){
+                    totalsales++;
+                }
+            }
+            if (totalsales > quantity){
+                storeReport.add(store);
+            }
+
+        }
+        return new ResponseEntity<>(new ResponseDTO(200,
+                "Las tiendas son:"+storeReport,null),HttpStatus.OK);
+    }
+
+    @GetMapping("/salesbystorequantity/{quantity}")
+    public ResponseEntity<ResponseDTO> getSalesByStoreByQuantity(@PathVariable int quantity) {
+        List<Store> storeL = new ArrayList<>();
+        for (Sale i : saleService.getSales()) {
+            if (saleService.getTotalSalesByStore(i.getStore().getCode()) > quantity) {
+                storeL.add(i.getStore());
+
+            }
+
+        }
+        return new ResponseEntity<>(
+                new ResponseDTO(200, storeL, null), HttpStatus.OK);
     }
 }

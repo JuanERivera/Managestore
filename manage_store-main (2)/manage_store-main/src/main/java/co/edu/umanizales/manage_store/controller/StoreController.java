@@ -6,22 +6,16 @@ import co.edu.umanizales.manage_store.service.StoreService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import java.util.List;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(path="store")
 public class StoreController {
     @Autowired
-    private StoreService storeService;
+    private static StoreService storeService;
 
     @GetMapping
-    public ResponseEntity<ResponseDTO> getStores()
+    public  ResponseEntity<ResponseDTO> getStores()
     {
 
         return new ResponseEntity<>(new ResponseDTO(
@@ -63,3 +57,4 @@ public class StoreController {
         }
     }
 }
+
